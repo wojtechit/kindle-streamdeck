@@ -109,7 +109,7 @@ def ping():
 @require_token
 def get_config():
     buttons = [
-        {k: b.get(k) for k in ("id", "label", "icon", "color", "sub")}
+        {k: b.get(k) for k in ("id", "label", "icon", "color", "icon_color", "sub")}
         for b in CFG.get("buttons", [])
     ]
     return jsonify(
@@ -233,16 +233,16 @@ def stale(key):
 
 # --- pogoda (Open-Meteo, bez klucza API) -----------------------------------
 
-WMO = {
-    0: ("Bezchmurnie", "☀"), 1: ("Prawie bezchmurnie", "☀"), 2: ("Częściowe zachmurzenie", "⛅"),
-    3: ("Pochmurno", "☁"), 45: ("Mgła", "≡"), 48: ("Szadź", "≡"),
-    51: ("Lekka mżawka", "☂"), 53: ("Mżawka", "☂"), 55: ("Gęsta mżawka", "☂"),
-    61: ("Słaby deszcz", "☂"), 63: ("Deszcz", "☂"), 65: ("Ulewa", "☔"),
-    66: ("Marznący deszcz", "☂"), 67: ("Marznący deszcz", "☔"),
-    71: ("Słaby śnieg", "❄"), 73: ("Śnieg", "❄"), 75: ("Intensywny śnieg", "❄"), 77: ("Ziarna śniegu", "❄"),
-    80: ("Przelotny deszcz", "☂"), 81: ("Przelotne opady", "☂"), 82: ("Gwałtowne opady", "☔"),
-    85: ("Przelotny śnieg", "❄"), 86: ("Śnieżyca", "❄"),
-    95: ("Burza", "⚡"), 96: ("Burza z gradem", "⚡"), 99: ("Silna burza z gradem", "⚡"),
+WMO = {  # kod WMO -> (opis, klucz ikony SVG we frontendzie)
+    0: ("Bezchmurnie", "sun"), 1: ("Prawie bezchmurnie", "sun"), 2: ("Częściowe zachmurzenie", "cloud-sun"),
+    3: ("Pochmurno", "cloud"), 45: ("Mgła", "fog"), 48: ("Szadź", "fog"),
+    51: ("Lekka mżawka", "rain"), 53: ("Mżawka", "rain"), 55: ("Gęsta mżawka", "rain"),
+    61: ("Słaby deszcz", "rain"), 63: ("Deszcz", "rain"), 65: ("Ulewa", "rain"),
+    66: ("Marznący deszcz", "rain"), 67: ("Marznący deszcz", "rain"),
+    71: ("Słaby śnieg", "snow"), 73: ("Śnieg", "snow"), 75: ("Intensywny śnieg", "snow"), 77: ("Ziarna śniegu", "snow"),
+    80: ("Przelotny deszcz", "rain"), 81: ("Przelotne opady", "rain"), 82: ("Gwałtowne opady", "rain"),
+    85: ("Przelotny śnieg", "snow"), 86: ("Śnieżyca", "snow"),
+    95: ("Burza", "storm"), 96: ("Burza z gradem", "storm"), 99: ("Silna burza z gradem", "storm"),
 }
 
 
@@ -265,13 +265,13 @@ def _fetch_weather():
     r.raise_for_status()
     d = r.json()
     cur = d["current"]
-    desc, icon = WMO.get(cur["weather_code"], ("?", "?"))
-    if icon == "☀" and not cur.get("is_day", 1):
-        icon = "☾"
+    desc, icon = WMO.get(cur["weather_code"], ("?", "cloud"))
+    if not cur.get("is_day", 1) and icon in ("sun", "cloud-sun"):
+        icon = "moon"
     daily = d["daily"]
     days = []
     for i in range(len(daily["time"])):
-        dd, di = WMO.get(daily["weather_code"][i], ("?", "?"))
+        dd, di = WMO.get(daily["weather_code"][i], ("?", "cloud"))
         days.append({
             "date": daily["time"][i],
             "icon": di, "desc": dd,

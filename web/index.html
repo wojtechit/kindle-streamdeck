@@ -5,8 +5,7 @@
 <!-- width=1024: layout rysowany pod 1024x600; na ekranach 1280x800 przeglądarka po prostu przeskaluje -->
 <meta name="viewport" content="width=1024, user-scalable=no">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#07080d">
+<meta name="theme-color" content="#1a3d8f">
 <title>Kindle Deck</title>
 <link rel="stylesheet" href="style.css">
 </head>
@@ -15,101 +14,113 @@
 
   <header id="statusbar">
     <div class="sb-left">
-      <span id="pc-dot" class="dot"></span>
-      <span id="pc-status">Łączenie…</span>
-      <span id="pc-ping" class="muted"></span>
+      <span class="sb-logo" data-icon="logo"></span>
+      <span class="sb-title">Stream Deck</span>
     </div>
-    <div class="sb-center">KINDLE<span class="accent">//</span>DECK</div>
-    <div class="sb-right">
+    <div class="sb-center">
+      <span id="sb-clock" class="sb-clock">--:--</span>
       <span id="sb-pomo" class="sb-pomo hidden"></span>
-      <span id="battery" class="battery"><span class="bat-body"><span id="bat-fill" class="bat-fill"></span></span><span id="bat-text">--%</span></span>
-      <button id="btn-fs" class="sb-btn" title="Pełny ekran">⛶</button>
-      <button id="btn-reload" class="sb-btn" title="Odśwież">↻</button>
+    </div>
+    <div class="sb-right">
+      <span id="pc-state" class="pc-state">
+        <span class="pc-icon" data-icon="wifi"></span>
+        <span id="pc-status">ŁĄCZENIE…</span>
+      </span>
+      <span id="pc-ping" class="sb-muted"></span>
+      <span id="battery" class="battery">
+        <span class="bat-body"><span id="bat-fill" class="bat-fill"></span></span>
+        <span id="bat-text">--%</span>
+      </span>
+      <button id="btn-fs" class="sb-btn" data-icon="maximize" title="Pełny ekran"></button>
+      <button id="btn-reload" class="sb-btn" data-icon="refresh" title="Odśwież"></button>
     </div>
   </header>
 
   <main id="main">
     <!-- LEWA: siatka 3x4 -->
-    <section id="deck">
-      <div id="deck-grid" class="fill"></div>
+    <section id="deck" class="panel deck-panel">
+      <div id="deck-grid" class="deck-grid"></div>
     </section>
 
-    <!-- ŚRODEK: Pomodoro + To-Do -->
+    <!-- ŚRODEK: To-Do + Pomodoro -->
     <section id="middle" class="col">
-      <div id="pomo" class="panel">
-        <div class="panel-head">
-          <span class="panel-title">POMODORO</span>
-          <span id="pomo-cycles" class="muted">#0</span>
-        </div>
-        <div class="pomo-modes">
-          <button class="chip active" data-mode="work">Praca</button>
-          <button class="chip" data-mode="short">Przerwa</button>
-          <button class="chip" data-mode="long">Długa</button>
-        </div>
-        <div id="pomo-time" class="pomo-time">25:00</div>
-        <div class="progress"><div id="pomo-bar" class="progress-bar"></div></div>
-        <div class="pomo-ctrl">
-          <button id="pomo-start" class="btn btn-primary">START</button>
-          <button id="pomo-reset" class="btn">RESET</button>
-          <button id="pomo-focus" class="btn">FOCUS</button>
-        </div>
-      </div>
-
       <div id="todo" class="panel grow">
         <div class="panel-head">
-          <span class="panel-title">ZADANIA</span>
-          <span id="todo-count" class="muted"></span>
-          <button id="todo-clear" class="link-btn">wyczyść zrobione</button>
+          <span class="panel-title">To-Do List</span>
+          <span id="todo-count" class="panel-meta"></span>
+          <button id="todo-clear" class="text-btn">Wyczyść zrobione</button>
         </div>
-        <form id="todo-form" class="todo-form" autocomplete="off">
-          <input id="todo-input" type="text" maxlength="200" placeholder="Nowe zadanie…">
-          <button type="submit" class="btn btn-primary">+</button>
-        </form>
         <div class="scroll-wrap">
           <ul id="todo-list" class="todo-list fill scroll"></ul>
         </div>
+        <form id="todo-form" class="todo-form" autocomplete="off">
+          <input id="todo-input" type="text" maxlength="200" placeholder="Dodaj zadanie…">
+          <button type="submit" class="icon-btn primary" data-icon="plus" title="Dodaj"></button>
+        </form>
+      </div>
+
+      <div id="pomo" class="panel pomo">
+        <div class="panel-head">
+          <span class="panel-title">Pomodoro</span>
+          <div class="seg">
+            <button class="seg-btn active" data-mode="work">Praca</button>
+            <button class="seg-btn" data-mode="short">Przerwa</button>
+            <button class="seg-btn" data-mode="long">Długa</button>
+          </div>
+          <span id="pomo-cycles" class="panel-meta right"></span>
+        </div>
+        <div class="pomo-row">
+          <div id="pomo-time" class="pomo-time">25:00</div>
+          <div class="pomo-ctrl">
+            <button id="pomo-start" class="icon-btn primary lg" data-icon="play" title="Start / pauza"></button>
+            <button id="pomo-reset" class="icon-btn lg" data-icon="reset" title="Reset"></button>
+            <button id="pomo-focus" class="icon-btn lg" data-icon="maximize" title="Tryb skupienia"></button>
+          </div>
+        </div>
+        <div class="progress"><div id="pomo-bar" class="progress-bar"></div></div>
       </div>
     </section>
 
-    <!-- PRAWA: zegar, pogoda, kalendarz -->
+    <!-- PRAWA: kalendarz + pogoda -->
     <section id="right" class="col">
-      <div id="clock-weather" class="panel">
-        <div id="clock" class="clock">--:--</div>
-        <div id="date" class="date"></div>
-        <div class="weather">
-          <div id="w-icon" class="w-icon">·</div>
-          <div class="w-main">
-            <div><span id="w-temp" class="w-temp">--°</span> <span id="w-desc" class="muted"></span></div>
-            <div id="w-extra" class="w-extra muted"></div>
-          </div>
-        </div>
-        <div id="w-days" class="w-days"></div>
-      </div>
-
       <div id="events" class="panel grow">
         <div class="panel-head">
-          <span class="panel-title">KALENDARZ</span>
-          <span id="ev-status" class="muted"></span>
+          <span class="panel-title">Kalendarz</span>
+          <span id="ev-status" class="panel-meta right"></span>
         </div>
         <div class="scroll-wrap">
           <ul id="ev-list" class="ev-list fill scroll"></ul>
         </div>
       </div>
+
+      <div id="weather" class="panel weather">
+        <div class="w-top">
+          <div id="w-icon" class="w-icon"></div>
+          <div class="w-main">
+            <div id="w-temp" class="w-temp">--°</div>
+            <div id="w-desc" class="w-desc"></div>
+            <div id="date" class="w-date"></div>
+          </div>
+        </div>
+        <div id="w-days" class="w-days"></div>
+      </div>
     </section>
   </main>
 </div>
 
-<!-- Tryb FOCUS: pełnoekranowy timer -->
+<!-- Tryb skupienia: pełnoekranowy timer -->
 <div id="focus" class="focus hidden">
-  <div id="focus-mode" class="focus-mode">PRACA</div>
+  <div class="focus-top">
+    <span id="focus-mode" class="focus-mode">PRACA</span>
+    <span id="focus-clock" class="focus-clock"></span>
+  </div>
   <div id="focus-time" class="focus-time">25:00</div>
   <div class="progress focus-progress"><div id="focus-bar" class="progress-bar"></div></div>
   <div class="focus-ctrl">
-    <button id="focus-toggle" class="btn btn-primary btn-xl">PAUZA</button>
-    <button id="focus-skip" class="btn btn-xl">POMIŃ</button>
-    <button id="focus-exit" class="btn btn-xl">✕ ZAMKNIJ</button>
+    <button id="focus-toggle" class="btn primary">Pauza</button>
+    <button id="focus-skip" class="btn">Pomiń</button>
+    <button id="focus-exit" class="btn">Zamknij</button>
   </div>
-  <div id="focus-clock" class="focus-clock"></div>
 </div>
 
 <div id="toast" class="toast"></div>

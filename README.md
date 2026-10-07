@@ -63,7 +63,13 @@ Layout jest rysowany pod **1024×600** (`viewport width=1024`). Na ekranach 1280
   "action": { "type": "hotkey", "keys": ["ctrl", "alt", "shift", "m"] } }
 ```
 
-Kolejność w tablicy `buttons` odpowiada kolejności na siatce, od lewej do prawej i z góry na dół (12 pól). `icon` to dowolny znak. Unikaj kolorowych emoji, bo stary Fire OS może ich nie mieć w fontach. Bezpieczne są np. `▶ ◀ ● ◉ ✕ ♫ ♪ ☀ ◆ ▤ ⚙ ⌂ ✉`.
+Kolejność w tablicy `buttons` odpowiada kolejności na siatce, od lewej do prawej i z góry na dół (12 pól).
+
+- `color`: kolor tła kafelka, najlepiej kolor marki aplikacji (Discord `#5865F2`, Spotify `#1DB954`, YouTube `#E03131`).
+- `icon`: nazwa wbudowanej ikony liniowej (SVG, bez emoji) albo nazwa pliku z `web/icons/`, np. `"discord.png"`. Tam możesz wrzucić oficjalne logotypy aplikacji.
+- `icon_color` (opcjonalnie): kolor ikony, np. żółta żarówka na ciemnym kafelku.
+
+Wbudowane ikony: `mic`, `mic-off`, `volume`, `volume-x`, `headphones`, `chat`, `music`, `playpause`, `next`, `prev`, `monitor`, `camera`, `record`, `stream`, `youtube`, `folder`, `globe`, `gamepad`, `bulb`, `terminal`, `lock`, `mail`, `calendar`, `code`, `home`, `power`, `settings`.
 
 | `type` | Parametry | Przykład / uwagi |
 |---|---|---|

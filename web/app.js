@@ -6,6 +6,64 @@
 (function () {
   'use strict';
 
+  // ------------------------------------------------------------------ ikony (SVG inline, styl liniowy 24x24)
+  var ICONS = {
+    // interfejs
+    logo: '<circle cx="12" cy="12" r="10"/><path d="M10 8l6 4-6 4z" fill="currentColor"/>',
+    wifi: '<path d="M5 12.55a11 11 0 0 1 14.08 0M1.42 9a16 16 0 0 1 21.16 0M8.53 16.11a6 6 0 0 1 6.95 0"/><circle cx="12" cy="20" r="1" fill="currentColor"/>',
+    maximize: '<path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3"/>',
+    refresh: '<path d="M21 12a9 9 0 1 1-2.64-6.36L21 8"/><path d="M21 3v5h-5"/>',
+    reset: '<path d="M3 12a9 9 0 1 0 2.64-6.36L3 8"/><path d="M3 3v5h5"/>',
+    plus: '<path d="M12 5v14M5 12h14"/>',
+    check: '<path d="M20 6L9 17l-5-5"/>',
+    x: '<path d="M18 6L6 18M6 6l12 12"/>',
+    play: '<path d="M7 4l13 8-13 8z" fill="currentColor"/>',
+    pause: '<rect x="6" y="4" width="4" height="16" rx="1" fill="currentColor"/><rect x="14" y="4" width="4" height="16" rx="1" fill="currentColor"/>',
+    // kafelki
+    mic: '<rect x="9" y="2" width="6" height="12" rx="3"/><path d="M19 10v1a7 7 0 0 1-14 0v-1M12 18v4M8 22h8"/>',
+    'mic-off': '<path d="M2 2l20 20M18.89 13.23A7 7 0 0 0 19 11v-1M5 10v1a7 7 0 0 0 12 4.9M15 9.34V5a3 3 0 0 0-5.68-1.33M9 9v2a3 3 0 0 0 5.12 2.12M12 18v4M8 22h8"/>',
+    'volume-x': '<path d="M11 5L6 9H2v6h4l5 4z"/><path d="M22 9l-6 6M16 9l6 6"/>',
+    volume: '<path d="M11 5L6 9H2v6h4l5 4z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14"/>',
+    headphones: '<path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1v-6h3zM3 19a2 2 0 0 0 2 2h1v-6H3z"/>',
+    chat: '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
+    music: '<path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>',
+    playpause: '<path d="M3 5l8 7-8 7z" fill="currentColor"/><path d="M15 5v14M20 5v14"/>',
+    next: '<path d="M5 4l10 8-10 8z" fill="currentColor"/><path d="M19 5v14"/>',
+    prev: '<path d="M19 20L9 12l10-8z" fill="currentColor"/><path d="M5 19V5"/>',
+    monitor: '<rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>',
+    camera: '<path d="M22 8l-6 4 6 4z"/><rect x="2" y="6" width="14" height="12" rx="2"/>',
+    record: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5" fill="currentColor"/>',
+    stream: '<circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49M7.76 16.24a6 6 0 0 1 0-8.49M19.07 4.93a10 10 0 0 1 0 14.14M4.93 19.07a10 10 0 0 1 0-14.14"/>',
+    youtube: '<rect x="2" y="5" width="20" height="14" rx="4"/><path d="M10 9l5 3-5 3z" fill="currentColor"/>',
+    folder: '<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
+    globe: '<circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 4 10 15 15 0 0 1-4 10 15 15 0 0 1-4-10 15 15 0 0 1 4-10z"/>',
+    gamepad: '<rect x="2" y="6" width="20" height="12" rx="4"/><path d="M6 12h4M8 10v4"/><circle cx="15" cy="13" r="1" fill="currentColor"/><circle cx="18" cy="11" r="1" fill="currentColor"/>',
+    bulb: '<path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.3h6c0-1 .4-1.8 1-2.3A7 7 0 0 0 12 2z"/>',
+    terminal: '<path d="M4 17l6-6-6-6M12 19h8"/>',
+    lock: '<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+    mail: '<rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 6l-10 7L2 6"/>',
+    calendar: '<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+    code: '<path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/>',
+    home: '<path d="M3 10l9-7 9 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/>',
+    power: '<path d="M18.36 6.64a9 9 0 1 1-12.73 0M12 2v10"/>',
+    settings: '<circle cx="12" cy="12" r="3"/><path d="M12 1v3M12 20v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M1 12h3M20 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/>',
+    // pogoda
+    sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>',
+    moon: '<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"/>',
+    cloud: '<path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9z"/>',
+    'cloud-sun': '<path d="M12 2v2M4.93 4.93l1.41 1.41M20 12h2M19.07 4.93l-1.41 1.41M15.95 12.65a4 4 0 0 0-5.93-4.61"/><path d="M13 22H7a5 5 0 1 1 4.9-6H13a3 3 0 0 1 0 6z"/>',
+    rain: '<path d="M4 14.9A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.24"/><path d="M16 14v6M8 14v6M12 16v6"/>',
+    snow: '<path d="M4 14.9A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.24"/><path d="M8 15h.01M8 19h.01M12 17h.01M12 21h.01M16 15h.01M16 19h.01"/>',
+    storm: '<path d="M6 16.33A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 .5 8.97"/><path d="M13 12l-3 5h4l-3 5"/>',
+    fog: '<path d="M4 14.9A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.24"/><path d="M16 17H7M17 21H9"/>'
+  };
+
+  function svg(name, stroke) {
+    var body = ICONS[name] || ICONS.settings;
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="' + (stroke || 2) +
+      '" stroke-linecap="round" stroke-linejoin="round">' + body + '</svg>';
+  }
+
   // ------------------------------------------------------------------ utils
   function $(id) { return document.getElementById(id); }
   function el(tag, cls, text) {
@@ -51,8 +109,14 @@
     t.textContent = msg;
     t.className = 'toast show' + (isErr ? ' err' : '');
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(function () { t.className = 'toast' + (isErr ? ' err' : ''); }, 2200);
+    toastTimer = setTimeout(function () { t.className = 'toast' + (isErr ? ' err' : ''); }, 2500);
   }
+
+  // statyczne ikony z HTML (data-icon="...")
+  (function () {
+    var nodes = document.querySelectorAll('[data-icon]');
+    for (var i = 0; i < nodes.length; i++) nodes[i].innerHTML = svg(nodes[i].getAttribute('data-icon'));
+  })();
 
   // ------------------------------------------------------------------ API
   var TOKEN = (function () {
@@ -90,7 +154,7 @@
   var connected = false;
 
   function setStatus(state, text) {
-    $('pc-dot').className = 'dot' + (state === 'ok' ? ' ok' : state === 'warn' ? ' warn' : '');
+    $('pc-state').className = 'pc-state' + (state ? ' ' + state : '');
     $('pc-status').textContent = text;
   }
 
@@ -101,17 +165,17 @@
         connected = false;
         $('pc-ping').textContent = '';
         if (err.status === 401) {
-          setStatus('warn', 'Zły token');
+          setStatus('warn', 'ZŁY TOKEN');
           askToken();
         } else {
-          setStatus('err', 'PC Offline');
+          setStatus('', 'PC OFFLINE');
         }
         return;
       }
       var rtt = Date.now() - t0;
       serverOffset = d.now + rtt / 2 - Date.now();
       $('pc-ping').textContent = rtt + ' ms';
-      setStatus('ok', 'PC Connected · ' + d.host);
+      setStatus('ok', 'PC CONNECTED (WI-FI)');
       if (!connected) { connected = true; loadAll(); }
     });
   }
@@ -147,27 +211,27 @@
     grid.innerHTML = '';
     for (var i = 0; i < 12; i++) {
       var wrap = el('div', 'key-wrap');
-      var b = buttons[i];
-      if (!b) {
-        wrap.appendChild(el('div', 'key key-empty'));
-      } else {
-        wrap.appendChild(makeKey(b));
-      }
+      wrap.appendChild(buttons[i] ? makeKey(buttons[i]) : el('div', 'key key-empty'));
       grid.appendChild(wrap);
     }
   }
 
   function makeKey(b) {
-    var color = b.color || '#00f0ff';
     var k = el('div', 'key');
-    k.style.borderColor = color;
-    k.style.color = color;
-    k.style.boxShadow = '0 0 10px ' + hexA(color, 0.35) + ', inset 0 0 14px ' + hexA(color, 0.12);
-    var icon = el('div', 'key-icon', b.icon || '•');
-    icon.style.textShadow = '0 0 12px ' + hexA(color, 0.8);
+    if (b.color) k.style.backgroundColor = b.color;
+    var icon = el('div', 'key-icon');
+    var name = b.icon || 'settings';
+    if (name.indexOf('.') > -1) {
+      // własny plik z web/icons/, np. "discord.png" - tu wrzucasz oficjalne logotypy
+      var img = el('img');
+      img.src = 'icons/' + name;
+      icon.appendChild(img);
+    } else {
+      icon.innerHTML = svg(name, 1.8);
+    }
+    if (b.icon_color) icon.style.color = b.icon_color;
     k.appendChild(icon);
     k.appendChild(el('div', 'key-label', b.label || b.id));
-    if (b.sub) k.appendChild(el('div', 'key-sub', b.sub));
     onTap(k, function () { fireKey(k, b); });
     return k;
   }
@@ -178,7 +242,7 @@
     triggerAction(b.id, function (err) {
       k.classList.remove('busy');
       k.classList.add(err ? 'fail' : 'ok');
-      setTimeout(function () { k.classList.remove('ok'); k.classList.remove('fail'); }, err ? 900 : 350);
+      setTimeout(function () { k.classList.remove('ok'); k.classList.remove('fail'); }, err ? 900 : 250);
     });
   }
 
@@ -187,12 +251,6 @@
       if (err) toast((err.status === 0 ? 'Brak połączenia z PC' : err.error), true);
       cb && cb(err);
     });
-  }
-
-  function hexA(hex, a) {
-    var m = /^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(hex);
-    if (!m) return 'rgba(0,240,255,' + a + ')';
-    return 'rgba(' + parseInt(m[1], 16) + ',' + parseInt(m[2], 16) + ',' + parseInt(m[3], 16) + ',' + a + ')';
   }
 
   // ------------------------------------------------------------------ To-Do
@@ -210,18 +268,22 @@
       if (!sorted[i].done) open++;
       list.appendChild(todoItem(sorted[i]));
     }
-    if (!items.length) list.appendChild(el('li', 'empty', 'Pusto. Dodaj pierwsze zadanie ↑'));
-    $('todo-count').textContent = open + ' / ' + items.length;
+    if (!items.length) list.appendChild(el('li', 'empty', 'Brak zadań.'));
+    $('todo-count').textContent = items.length ? (open + ' otwarte') : '';
   }
 
   function todoItem(it) {
     var li = el('li', 'todo-item' + (it.done ? ' done' : ''));
-    var chk = el('span', 'todo-check', it.done ? '✓' : '');
+    var chk = el('span', 'todo-check');
+    chk.innerHTML = it.done ? svg('check', 3) : '';
     var txt = el('span', 'todo-text', it.text);
-    var del = el('button', 'todo-del', '✕');
+    var del = el('button', 'todo-del');
+    del.innerHTML = svg('x');
     li.appendChild(chk); li.appendChild(txt); li.appendChild(del);
     function toggle() {
+      var done = !li.classList.contains('done');
       li.classList.toggle('done'); // od razu, nie czekamy na serwer
+      chk.innerHTML = done ? svg('check', 3) : '';
       api('POST', '/api/todos/' + it.id + '/toggle', {}, todoCb);
     }
     chk.addEventListener('click', toggle, false);
@@ -309,7 +371,7 @@
       beep(wasWork ? 3 : 2);
       $('focus').classList.add('flash');
       setTimeout(function () { $('focus').classList.remove('flash'); }, 3200);
-      toast(wasWork ? 'Koniec sesji! Czas na przerwę.' : 'Przerwa skończona - wracamy do roboty.');
+      toast(wasWork ? 'Sesja zakończona. Przerwa.' : 'Koniec przerwy.');
     }
     if (wasWork) startPomo(); // przerwa startuje sama, praca czeka na Twój ruch
   }
@@ -319,35 +381,39 @@
     return pad(Math.floor(s / 60)) + ':' + pad(s % 60);
   }
 
+  var lastPlayState = null;
   function renderPomo() {
     if (P.running) P.remaining = Math.max(0, P.endAt - now());
     var isBreak = P.mode !== 'work';
     var t = fmt(P.remaining);
     var pct = P.total ? (100 - P.remaining / P.total * 100) : 0;
+    var barCls = 'progress-bar' + (isBreak ? ' break' : '');
 
     $('pomo-time').textContent = t;
-    $('pomo-time').className = 'pomo-time' + (isBreak ? ' break' : '');
     $('pomo-bar').style.width = pct + '%';
-    $('pomo-bar').className = 'progress-bar' + (isBreak ? ' break' : '');
-    $('pomo-cycles').textContent = '#' + P.cycles;
-    $('pomo-start').textContent = P.running ? 'PAUZA' : (P.remaining < P.total ? 'WZNÓW' : 'START');
+    $('pomo-bar').className = barCls;
+    $('pomo-cycles').textContent = P.cycles ? ('Sesje: ' + P.cycles) : '';
+    if (lastPlayState !== P.running) { // nie podmieniaj SVG co 0,5 s
+      lastPlayState = P.running;
+      $('pomo-start').innerHTML = svg(P.running ? 'pause' : 'play');
+    }
 
-    var chips = document.querySelectorAll('.pomo-modes .chip');
-    for (var i = 0; i < chips.length; i++) {
-      chips[i].className = 'chip' + (chips[i].getAttribute('data-mode') === P.mode ? ' active' : '');
+    var segs = document.querySelectorAll('.seg-btn');
+    for (var i = 0; i < segs.length; i++) {
+      segs[i].className = 'seg-btn' + (segs[i].getAttribute('data-mode') === P.mode ? ' active' : '');
     }
 
     $('focus-mode').textContent = MODE_NAMES[P.mode] + (P.running ? '' : ' · PAUZA');
     $('focus-mode').className = 'focus-mode' + (isBreak ? ' break' : '');
     $('focus-time').textContent = t;
-    $('focus-time').className = 'focus-time' + (isBreak ? ' break' : '') + (P.running ? '' : ' paused');
+    $('focus-time').className = 'focus-time' + (P.running ? '' : ' paused');
     $('focus-bar').style.width = pct + '%';
-    $('focus-bar').className = 'progress-bar' + (isBreak ? ' break' : '');
-    $('focus-toggle').textContent = P.running ? 'PAUZA' : 'START';
+    $('focus-bar').className = barCls;
+    $('focus-toggle').textContent = P.running ? 'Pauza' : 'Start';
 
     var sb = $('sb-pomo');
     var focusOpen = !$('focus').classList.contains('hidden');
-    if (P.running && !focusOpen) { sb.textContent = '◷ ' + t; sb.classList.remove('hidden'); }
+    if (P.running && !focusOpen) { sb.textContent = (isBreak ? 'Przerwa ' : 'Praca ') + t; sb.classList.remove('hidden'); }
     else sb.classList.add('hidden');
   }
 
@@ -366,9 +432,9 @@
   onTap($('focus-exit'), function () { showFocus(false); });
   onTap($('sb-pomo'), function () { showFocus(true); });
   (function () {
-    var chips = document.querySelectorAll('.pomo-modes .chip');
-    for (var i = 0; i < chips.length; i++) {
-      (function (c) { onTap(c, function () { setMode(c.getAttribute('data-mode')); }); })(chips[i]);
+    var segs = document.querySelectorAll('.seg-btn');
+    for (var i = 0; i < segs.length; i++) {
+      (function (c) { onTap(c, function () { setMode(c.getAttribute('data-mode')); }); })(segs[i]);
     }
   })();
 
@@ -381,9 +447,9 @@
       for (var i = 0; i < times; i++) {
         var o = audioCtx.createOscillator();
         var g = audioCtx.createGain();
-        o.type = 'square';
+        o.type = 'sine';
         o.frequency.value = 880;
-        g.gain.value = 0.15;
+        g.gain.value = 0.2;
         o.connect(g); g.connect(audioCtx.destination);
         var t0 = audioCtx.currentTime + i * 0.35;
         o.start(t0); o.stop(t0 + 0.2);
@@ -393,39 +459,38 @@
 
   // ------------------------------------------------------------------ zegar
   var DAYS = ['Niedziela', 'Poniedziałek', 'Wtorek', 'Środa', 'Czwartek', 'Piątek', 'Sobota'];
+  var DAYS_SHORT = ['Nd', 'Pn', 'Wt', 'Śr', 'Cz', 'Pt', 'Sb'];
   var MONTHS = ['stycznia', 'lutego', 'marca', 'kwietnia', 'maja', 'czerwca', 'lipca',
                 'sierpnia', 'września', 'października', 'listopada', 'grudnia'];
 
   function tickClock() {
     var d = new Date(now());
-    var c = $('clock');
-    c.innerHTML = '';
-    c.appendChild(document.createTextNode(pad(d.getHours()) + ':' + pad(d.getMinutes())));
-    c.appendChild(el('span', 'sec', ':' + pad(d.getSeconds())));
-    $('date').textContent = DAYS[d.getDay()] + ', ' + d.getDate() + ' ' + MONTHS[d.getMonth()] + ' ' + d.getFullYear();
-    $('focus-clock').textContent = pad(d.getHours()) + ':' + pad(d.getMinutes());
+    var hm = pad(d.getHours()) + ':' + pad(d.getMinutes());
+    $('sb-clock').textContent = hm;
+    $('focus-clock').textContent = hm;
+    $('date').textContent = DAYS[d.getDay()] + ', ' + d.getDate() + ' ' + MONTHS[d.getMonth()];
   }
 
   // ------------------------------------------------------------------ pogoda
   function loadWeather() {
     api('GET', '/api/weather', null, function (err, w) {
-      if (err) { $('w-desc').textContent = 'pogoda niedostępna'; return; }
-      $('w-icon').textContent = w.icon;
+      if (err) { $('w-desc').textContent = 'Pogoda niedostępna'; return; }
+      $('w-icon').innerHTML = svg(w.icon, 1.5);
       $('w-temp').textContent = w.temp + '°';
       $('w-desc').textContent = w.desc;
-      $('w-extra').textContent = 'odczuwalna ' + w.feels + '° · wiatr ' + w.wind + ' km/h · ' +
-        w.humidity + '%' + (CONFIG && CONFIG.location ? ' · ' + CONFIG.location : '');
+      $('w-desc').title = CONFIG && CONFIG.location ? CONFIG.location : '';
       var box = $('w-days');
       box.innerHTML = '';
-      var labels = ['Dziś', 'Jutro'];
-      for (var i = 0; i < w.days.length; i++) {
+      for (var i = 1; i < w.days.length; i++) { // dziś jest w nagłówku
         var dd = w.days[i];
         var p = dd.date.split('-');
-        var name = labels[i] || DAYS[new Date(+p[0], +p[1] - 1, +p[2]).getDay()].slice(0, 3);
         var cell = el('div', 'w-day');
-        cell.appendChild(document.createTextNode(name));
-        cell.appendChild(el('b', null, dd.icon + ' ' + dd.tmax + '°'));
-        cell.appendChild(document.createTextNode(dd.tmin + '° · ☂' + (dd.rain == null ? '-' : dd.rain) + '%'));
+        cell.appendChild(document.createTextNode(i === 1 ? 'Jutro' : DAYS_SHORT[new Date(+p[0], +p[1] - 1, +p[2]).getDay()]));
+        var ic = el('span');
+        ic.innerHTML = svg(dd.icon);
+        cell.appendChild(ic);
+        cell.appendChild(el('b', null, dd.tmax + '°'));
+        cell.appendChild(document.createTextNode(dd.tmin + '°'));
         box.appendChild(cell);
       }
     });
@@ -441,9 +506,9 @@
 
   function loadEvents() {
     api('GET', '/api/events', null, function (err, d) {
-      if (err) { $('ev-status').textContent = 'błąd'; return; }
+      if (err) { $('ev-status').textContent = 'błąd pobierania'; return; }
       EVENTS = d.items || [];
-      $('ev-status').textContent = d.configured ? (d.stale ? 'offline' : '') : 'brak ICS w config';
+      $('ev-status').textContent = d.configured ? (d.stale ? 'offline' : '') : 'brak adresu ICS';
       renderEvents();
     });
   }
@@ -452,45 +517,53 @@
     var t = new Date(now()); t.setHours(0, 0, 0, 0);
     var x = new Date(d.getTime()); x.setHours(0, 0, 0, 0);
     var diff = Math.round((x - t) / 86400000);
-    if (diff <= 0) return 'DZIŚ';
-    if (diff === 1) return 'JUTRO';
-    return (DAYS[d.getDay()] + ', ' + d.getDate() + ' ' + MONTHS[d.getMonth()]).toUpperCase();
+    if (diff <= 0) return 'Dziś';
+    if (diff === 1) return 'Jutro';
+    return DAYS[d.getDay()] + ', ' + d.getDate() + ' ' + MONTHS[d.getMonth()];
   }
 
   function renderEvents() {
     var list = $('ev-list');
+    var scroll = list.scrollTop;
     list.innerHTML = '';
-    if (!EVENTS.length) { list.appendChild(el('li', 'empty', 'Brak nadchodzących wydarzeń')); return; }
     var t = now();
     var lastGroup = '';
+    var shown = 0;
     for (var i = 0; i < EVENTS.length; i++) {
       var ev = EVENTS[i];
       var s = parseLocal(ev.start), e = parseLocal(ev.end);
       if (e.getTime() < t) continue;
+      shown++;
       var g = dayLabel(s);
       if (g !== lastGroup) { list.appendChild(el('li', 'ev-group', g)); lastGroup = g; }
-      var cls = 'ev';
+      var state = '';
       if (!ev.all_day) {
-        if (s.getTime() <= t) cls += ' now';
-        else if (s.getTime() - t < 15 * 60000) cls += ' soon';
+        if (s.getTime() <= t) state = 'now';
+        else if (s.getTime() - t < 15 * 60000) state = 'soon';
       }
-      var li = el('li', cls);
-      var when = ev.all_day ? 'cały dzień'
-        : pad(s.getHours()) + ':' + pad(s.getMinutes()) + ' – ' + pad(e.getHours()) + ':' + pad(e.getMinutes());
-      if (cls.indexOf('now') > -1) when += ' · TRWA';
-      else if (cls.indexOf('soon') > -1) when += ' · za ' + Math.ceil((s.getTime() - t) / 60000) + ' min';
-      li.appendChild(el('div', 'ev-time', when));
-      li.appendChild(el('div', 'ev-title', ev.title));
+      var li = el('li', 'ev' + (state ? ' ' + state : ''));
+      var body = el('div', 'ev-body');
+      var time = el('div', 'ev-time');
+      time.appendChild(el('b', null, ev.all_day ? 'Cały dzień'
+        : pad(s.getHours()) + ':' + pad(s.getMinutes())));
+      if (!ev.all_day) time.appendChild(document.createTextNode(' – ' + pad(e.getHours()) + ':' + pad(e.getMinutes())));
+      if (state === 'now') time.appendChild(el('span', 'ev-badge', 'trwa'));
+      if (state === 'soon') time.appendChild(el('span', 'ev-badge', 'za ' + Math.ceil((s.getTime() - t) / 60000) + ' min'));
+      body.appendChild(time);
+      body.appendChild(el('div', 'ev-title', ev.title));
+      li.appendChild(body);
       if (ev.has_link) li.appendChild(joinBtn(ev));
       list.appendChild(li);
     }
+    if (!shown) list.appendChild(el('li', 'empty', 'Brak nadchodzących wydarzeń.'));
+    list.scrollTop = scroll;
   }
 
   function joinBtn(ev) {
     var b = el('button', 'ev-join', 'DOŁĄCZ');
     onTap(b, function () {
       api('POST', '/api/events/' + ev.id + '/join', {}, function (err) {
-        toast(err ? 'Nie udało się otworzyć spotkania' : 'Otwieram spotkanie na PC…', !!err);
+        toast(err ? 'Nie udało się otworzyć spotkania' : 'Otwieram spotkanie na PC', !!err);
       });
     });
     return b;
@@ -502,9 +575,9 @@
       if (level == null || isNaN(level)) { $('battery').classList.add('hidden'); return; }
       $('battery').classList.remove('hidden');
       var f = $('bat-fill');
-      f.style.width = Math.max(2, Math.round(level / 100 * 20)) + 'px';
+      f.style.width = Math.max(1, Math.round(level / 100 * 18)) + 'px';
       f.className = 'bat-fill' + (charging ? ' charging' : level <= 20 ? ' low' : '');
-      $('bat-text').textContent = level + '%' + (charging ? ' ⚡' : '');
+      $('bat-text').textContent = level + '%';
     };
     try {
       if (window.fully && fully.getBatteryLevel) { // Fully Kiosk Browser JS API
@@ -545,5 +618,5 @@
   setInterval(function () { if (connected) loadWeather(); }, 10 * 60000);
   setInterval(function () { if (connected) loadEvents(); }, 2 * 60000);
   setInterval(function () { if (connected) loadTodos(); }, 30000); // gdy dodasz zadanie z PC
-  setInterval(renderEvents, 30000);                                // "za X min" / TRWA
+  setInterval(renderEvents, 30000);                                // "za X min" / trwa
 })();
