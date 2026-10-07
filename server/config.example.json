@@ -1,0 +1,62 @@
+{
+  "host": "0.0.0.0",
+  "port": 8765,
+  "token": "zmien-mnie",
+
+  "weather": { "name": "Lubochnia", "lat": 51.58, "lon": 20.05 },
+
+  "calendar_ics_url": "",
+  "calendar_days": 7,
+  "calendar_max": 15,
+
+  "home_assistant": { "url": "http://192.168.1.10:8123", "token": "" },
+  "obs": { "host": "localhost", "port": 4455, "password": "" },
+
+  "pomodoro": {
+    "work": 25,
+    "short_break": 5,
+    "long_break": 15,
+    "long_every": 4,
+    "auto_focus": true,
+    "on_work_start": null,
+    "on_break_start": null
+  },
+
+  "hidden_actions": [
+    { "id": "focus_on", "action": { "type": "hotkey", "keys": ["win", "n"] } }
+  ],
+
+  "buttons": [
+    { "id": "obs_game",  "label": "Scena: Gra",   "icon": "▶", "color": "#00f0ff",
+      "action": { "type": "obs_scene", "scene": "Gra" } },
+    { "id": "obs_cam",   "label": "Scena: Kamera", "icon": "◉", "color": "#00f0ff",
+      "action": { "type": "obs_scene", "scene": "Kamera" } },
+    { "id": "obs_rec",   "label": "Nagrywaj",     "icon": "●", "color": "#ff3864",
+      "action": { "type": "obs_record" } },
+
+    { "id": "dc_mute",   "label": "Discord Mic",  "icon": "✕", "color": "#a259ff", "sub": "mute",
+      "action": { "type": "hotkey", "keys": ["ctrl", "alt", "shift", "m"] } },
+    { "id": "spotify",   "label": "Spotify",      "icon": "♫", "color": "#39ff14",
+      "action": { "type": "open", "target": "spotify:" } },
+    { "id": "playlist",  "label": "Focus Mix",    "icon": "♪", "color": "#39ff14", "sub": "playlista",
+      "action": { "type": "multi", "steps": [
+        { "type": "open", "target": "spotify:playlist:37i9dQZF1DWZeKCadgRdKQ" },
+        { "type": "sleep", "s": 3 },
+        { "type": "media", "key": "playpause" }
+      ] } },
+
+    { "id": "prev",      "label": "Poprzedni",    "icon": "◀◀", "color": "#ff9f1c",
+      "action": { "type": "media", "key": "prev" } },
+    { "id": "playpause", "label": "Play / Pauza", "icon": "▶❚❚", "color": "#ff9f1c",
+      "action": { "type": "media", "key": "playpause" } },
+    { "id": "next",      "label": "Następny",     "icon": "▶▶", "color": "#ff9f1c",
+      "action": { "type": "media", "key": "next" } },
+
+    { "id": "steam",     "label": "Steam",        "icon": "◆", "color": "#ff2bd6",
+      "action": { "type": "open", "target": "steam://open/main" } },
+    { "id": "downloads", "label": "Pobrane",      "icon": "▤", "color": "#f9f871",
+      "action": { "type": "open", "target": "%USERPROFILE%\\Downloads" } },
+    { "id": "light",     "label": "Światło",      "icon": "☀", "color": "#f9f871", "sub": "pokój",
+      "action": { "type": "ha", "service": "light.toggle", "entity_id": "light.pokoj" } }
+  ]
+}

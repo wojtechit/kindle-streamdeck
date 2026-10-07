@@ -1,0 +1,7 @@
+flask>=3.0
+waitress>=3.0
+requests>=2.31
+pyautogui>=0.9.54
+icalendar>=5.0
+recurring-ical-events>=2.1
+obsws-python>=1.7

@@ -1,0 +1,6 @@
+server/config.json
+server/todos.json
+server/deck.log
+server/.venv/
+__pycache__/
+*.pyc
