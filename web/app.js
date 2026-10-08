@@ -47,15 +47,15 @@
     home: '<path d="M3 10l9-7 9 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/>',
     power: '<path d="M18.36 6.64a9 9 0 1 1-12.73 0M12 2v10"/>',
     settings: '<circle cx="12" cy="12" r="3"/><path d="M12 1v3M12 20v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M1 12h3M20 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/>',
-    // pogoda
-    sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>',
-    moon: '<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"/>',
-    cloud: '<path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9z"/>',
-    'cloud-sun': '<path d="M12 2v2M4.93 4.93l1.41 1.41M20 12h2M19.07 4.93l-1.41 1.41M15.95 12.65a4 4 0 0 0-5.93-4.61"/><path d="M13 22H7a5 5 0 1 1 4.9-6H13a3 3 0 0 1 0 6z"/>',
-    rain: '<path d="M4 14.9A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.24"/><path d="M16 14v6M8 14v6M12 16v6"/>',
-    snow: '<path d="M4 14.9A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.24"/><path d="M8 15h.01M8 19h.01M12 17h.01M12 21h.01M16 15h.01M16 19h.01"/>',
-    storm: '<path d="M6 16.33A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 .5 8.97"/><path d="M13 12l-3 5h4l-3 5"/>',
-    fog: '<path d="M4 14.9A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.24"/><path d="M16 17H7M17 21H9"/>'
+    // pogoda (kolorowe: słońce żółte, chmura jasna, opad niebieski)
+    sun: '<g stroke="#FFC845"><circle cx="12" cy="12" r="4" fill="#FFC845"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></g>',
+    moon: '<path stroke="#C9D3E6" fill="#C9D3E6" fill-opacity="0.15" d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"/>',
+    cloud: '<path stroke="#E6ECF5" fill="#E6ECF5" fill-opacity="0.12" d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9z"/>',
+    'cloud-sun': '<path stroke="#FFC845" d="M12 2v2M4.93 4.93l1.41 1.41M20 12h2M19.07 4.93l-1.41 1.41M15.95 12.65a4 4 0 0 0-5.93-4.61"/><path stroke="#E6ECF5" fill="#E6ECF5" fill-opacity="0.12" d="M13 22H7a5 5 0 1 1 4.9-6H13a3 3 0 0 1 0 6z"/>',
+    rain: '<path stroke="#E6ECF5" d="M4 14.9A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.24"/><path stroke="#5AA9FF" d="M16 14v6M8 14v6M12 16v6"/>',
+    snow: '<path stroke="#E6ECF5" d="M4 14.9A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.24"/><path stroke="#BFE3FF" d="M8 15h.01M8 19h.01M12 17h.01M12 21h.01M16 15h.01M16 19h.01"/>',
+    storm: '<path stroke="#E6ECF5" d="M6 16.33A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 .5 8.97"/><path stroke="#FFC845" d="M13 12l-3 5h4l-3 5"/>',
+    fog: '<path stroke="#E6ECF5" d="M4 14.9A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.24"/><path stroke="#9AA8C2" d="M16 17H7M17 21H9"/>'
   };
 
   function svg(name, stroke) {
@@ -164,9 +164,8 @@
       if (err) {
         connected = false;
         $('pc-ping').textContent = '';
-        if (err.status === 401) {
-          setStatus('warn', 'ZŁY TOKEN');
-          askToken();
+        if (err.status === 401 || err.status === 403) {
+          setStatus('warn', 'BRAK DOSTĘPU (config)');
         } else {
           setStatus('', 'PC OFFLINE');
         }
@@ -178,15 +177,6 @@
       setStatus('ok', 'PC CONNECTED (WI-FI)');
       if (!connected) { connected = true; loadAll(); }
     });
-  }
-
-  var asking = false;
-  function askToken() {
-    if (asking) return;
-    asking = true;
-    var t = window.prompt('Token z config.json na PC:', TOKEN);
-    asking = false;
-    if (t != null && t !== TOKEN) { TOKEN = t; store('deck.token', t); ping(); }
   }
 
   function loadAll() {
@@ -201,16 +191,30 @@
     api('GET', '/api/config', null, function (err, d) {
       if (err) return;
       CONFIG = d;
+      $('w-loc').textContent = d.location || '';
       renderDeck(d.buttons || []);
       applyPomoConfig(d.pomodoro || {});
     });
   }
 
+  // 1-4 przyciski -> 2x2, 5-6 -> 2x3, 7-9 -> 3x3, 10-12 -> 3x4
+  function gridFor(n) {
+    if (n <= 4) return [2, 2];
+    if (n <= 6) return [2, 3];
+    if (n <= 9) return [3, 3];
+    return [3, 4];
+  }
+
   function renderDeck(buttons) {
     var grid = $('deck-grid');
+    var g = gridFor(buttons.length);
+    var slots = g[0] * g[1];
     grid.innerHTML = '';
-    for (var i = 0; i < 12; i++) {
+    grid.className = 'deck-grid cols-' + g[0] + ' rows-' + g[1];
+    for (var i = 0; i < slots; i++) {
       var wrap = el('div', 'key-wrap');
+      wrap.style.width = (100 / g[0]) + '%';
+      wrap.style.height = (100 / g[1]) + '%';
       wrap.appendChild(buttons[i] ? makeKey(buttons[i]) : el('div', 'key key-empty'));
       grid.appendChild(wrap);
     }
@@ -222,7 +226,8 @@
     var icon = el('div', 'key-icon');
     var name = b.icon || 'settings';
     if (name.indexOf('.') > -1) {
-      // własny plik z web/icons/, np. "discord.png" - tu wrzucasz oficjalne logotypy
+      // plik z web/icons/ (np. "chrome.svg", "discord.png") - logotypy aplikacji na ciemnym kafelku
+      k.classList.add('key-logo');
       var img = el('img');
       img.src = 'icons/' + name;
       icon.appendChild(img);
@@ -475,22 +480,26 @@
   function loadWeather() {
     api('GET', '/api/weather', null, function (err, w) {
       if (err) { $('w-desc').textContent = 'Pogoda niedostępna'; return; }
-      $('w-icon').innerHTML = svg(w.icon, 1.5);
+      $('w-icon').innerHTML = svg(w.icon, 1.6);
       $('w-temp').textContent = w.temp + '°';
       $('w-desc').textContent = w.desc;
-      $('w-desc').title = CONFIG && CONFIG.location ? CONFIG.location : '';
+      $('w-range').textContent = w.days.length ? (w.days[0].tmax + '° / ' + w.days[0].tmin + '°') : '';
+      $('w-loc').textContent = CONFIG && CONFIG.location ? CONFIG.location : '';
+      $('w-feels').textContent = w.feels + '°';
+      $('w-wind').textContent = w.wind + ' km/h';
+      $('w-hum').textContent = w.humidity + '%';
       var box = $('w-days');
       box.innerHTML = '';
-      for (var i = 1; i < w.days.length; i++) { // dziś jest w nagłówku
+      for (var i = 1; i < w.days.length && i <= 3; i++) { // dziś jest w nagłówku
         var dd = w.days[i];
         var p = dd.date.split('-');
         var cell = el('div', 'w-day');
-        cell.appendChild(document.createTextNode(i === 1 ? 'Jutro' : DAYS_SHORT[new Date(+p[0], +p[1] - 1, +p[2]).getDay()]));
-        var ic = el('span');
+        cell.appendChild(el('span', 'w-day-name', i === 1 ? 'Jutro' : DAYS_SHORT[new Date(+p[0], +p[1] - 1, +p[2]).getDay()]));
+        var ic = el('span', 'w-day-icon');
         ic.innerHTML = svg(dd.icon);
         cell.appendChild(ic);
         cell.appendChild(el('b', null, dd.tmax + '°'));
-        cell.appendChild(document.createTextNode(dd.tmin + '°'));
+        cell.appendChild(el('span', 'w-day-min', dd.tmin + '°'));
         box.appendChild(cell);
       }
     });

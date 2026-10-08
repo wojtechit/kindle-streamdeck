@@ -128,7 +128,7 @@ svg { display: block; }
 /* ---------- Stream Deck ---------- */
 .deck-panel { padding: 7px; }
 .deck-grid { position: absolute; top: 7px; left: 7px; right: 7px; bottom: 7px; }
-.key-wrap { float: left; width: 33.3333%; height: 25%; padding: 5px; }
+.key-wrap { float: left; width: 33.3333%; height: 25%; padding: 6px; }
 .key {
   position: relative; width: 100%; height: 100%;
   border-radius: 12px; overflow: hidden;
@@ -154,6 +154,12 @@ svg { display: block; }
 .key.ok:after { background: rgba(255,255,255,0.18); }
 .key.fail:after { background: rgba(229,72,77,0.55); }
 .key.busy { opacity: 0.85; }
+.key-logo { background-color: #1b2742; background-image: none; border-color: rgba(255,255,255,0.08); }
+.key-logo .key-icon { top: 22%; height: auto; }
+.key-logo .key-icon img { width: 64px; height: 64px; margin: 0 auto; }
+.key-logo .key-label { font-size: 14px; letter-spacing: 0.6px; color: #e8edf6; bottom: 16%; }
+.cols-3 .key-logo .key-icon img { width: 46px; height: 46px; }
+.cols-3 .key-logo .key-label { font-size: 12px; bottom: 10px; }
 .key-empty { background: rgba(255,255,255,0.03); border: 1px dashed rgba(255,255,255,0.1); box-shadow: none; }
 
 /* ---------- To-Do ---------- */
@@ -215,17 +221,27 @@ svg { display: block; }
 .ev-join.pressed { background: #2459c4; }
 
 /* ---------- Pogoda ---------- */
-.weather { -webkit-flex: none; flex: none; padding: 10px 14px; }
+.weather { -webkit-flex: none; flex: none; padding: 10px 14px 8px; }
+.weather .panel-head { margin-bottom: 2px; }
+.weather .panel-title { font-size: 14px; }
 .w-top { display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; }
-.w-icon { width: 64px; height: 64px; margin-right: 14px; color: #fff; }
-.w-icon svg { width: 64px; height: 64px; }
-.w-main { -webkit-flex: 1; flex: 1; min-width: 0; text-align: right; }
-.w-temp { font-size: 40px; line-height: 42px; font-weight: 600; color: #fff; }
-.w-desc, .w-date { font-size: 12px; color: #9aa8c2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.w-days { display: -webkit-flex; display: flex; margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.06); }
-.w-day { -webkit-flex: 1; flex: 1; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; font-size: 12px; color: #9aa8c2; white-space: nowrap; }
-.w-day svg { width: 16px; height: 16px; margin: 0 4px; color: #c9d3e6; }
+.w-icon { width: 58px; height: 58px; margin-right: 12px; }
+.w-icon svg { width: 58px; height: 58px; }
+.w-main { -webkit-flex: 1; flex: 1; min-width: 0; }
+.w-temp { font-size: 42px; line-height: 44px; font-weight: 600; color: #fff; }
+.w-desc { font-size: 12px; color: #9aa8c2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.w-range { -webkit-flex: none; flex: none; font-size: 13px; color: #c9d3e6; -webkit-align-self: flex-start; align-self: flex-start; margin-top: 6px; }
+.w-stats { display: -webkit-flex; display: flex; margin-top: 8px; background: #0b1222; border-radius: 6px; padding: 6px 0; }
+.w-stat { -webkit-flex: 1; flex: 1; text-align: center; border-left: 1px solid rgba(255,255,255,0.06); }
+.w-stat:first-child { border-left: none; }
+.w-stat span { display: block; font-size: 10px; color: #66748f; text-transform: uppercase; letter-spacing: 0.5px; }
+.w-stat b { display: block; font-size: 14px; font-weight: 600; color: #e8edf6; }
+.w-days { display: -webkit-flex; display: flex; margin-top: 6px; }
+.w-day { -webkit-flex: 1; flex: 1; display: -webkit-flex; display: flex; -webkit-align-items: center; align-items: center; -webkit-justify-content: center; justify-content: center; font-size: 12px; color: #9aa8c2; white-space: nowrap; height: 28px; }
+.w-day-name { margin-right: 4px; }
+.w-day-icon svg { width: 18px; height: 18px; margin-right: 4px; }
 .w-day b { color: #e8edf6; font-weight: 600; margin-right: 3px; }
+.w-day-min { color: #66748f; }
 
 /* ---------- Tryb skupienia ---------- */
 .focus {

@@ -1,0 +1,10 @@
+{
+  "name": "Kindle Deck",
+  "short_name": "Deck",
+  "start_url": "/",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#15306f",
+  "theme_color": "#15306f",
+  "icons": [{ "src": "icon-192.png", "sizes": "192x192", "type": "image/png" }]
+}

@@ -1,123 +1,126 @@
-# Kindle Deck — Stream Deck i dashboard na biurko ze starego Kindle Fire
+# Kindle Deck: panel produktywności na biurko ze starego Kindle Fire
 
-Stary Kindle Fire HD 7 jako dotykowy panel do sterowania PC z Windowsem przez Wi-Fi, a przy okazji podręczne centrum produktywności: lista zadań, Pomodoro, zegar, pogoda i kalendarz z przyciskiem „DOŁĄCZ”.
+Stary Kindle Fire jako dotykowy panel obok monitora: skróty do aplikacji na PC, Pomodoro, lista zadań, pogoda i kalendarz z przyciskiem „DOŁĄCZ”.
 
 ![Kindle Deck](docs/screenshot.png)
 
-## Architektura
+## Jak to działa
 
 ```
-┌──────────── Kindle Fire (Silk / Fully Kiosk) ───────────┐        ┌──────────────── PC (Windows) ─────────────────┐
-│  web/index.html + style.css + app.js  (czysty ES5)      │  HTTP  │  server/server.py  (Flask + waitress)         │
-│  • siatka 3x4 → POST /api/action/<id>                    │ ─────► │  • serwuje web/ i REST API                     │
-│  • to-do      → /api/todos                               │  LAN   │  • actions.py: hotkey, media, open, url,      │
-│  • pogoda     → /api/weather   (proxy)                   │ ◄───── │    shell, Home Assistant, OBS, makra          │
-│  • kalendarz  → /api/events    (proxy)                   │        │  • proxy Open-Meteo i Google Calendar (ICS)   │
-│  • heartbeat  → /api/ping co 5 s                         │        │  • todos.json (lista zadań trzymana na PC)    │
-└──────────────────────────────────────────────────────────┘        └────────────────────────────────────────────────┘
+┌──────────── Kindle Fire (Fully Kiosk) ──────────┐        ┌──────────── PC (Windows) ─────────────┐
+│  web/  – czysty HTML/CSS/ES5, bez budowania      │  HTTP  │  server/server.py (Flask + waitress)  │
+│  • kafelki     → POST /api/action/<id>           │ ─────► │  • serwuje web/ i API                 │
+│  • to-do       → /api/todos                      │  LAN   │  • otwiera programy / linki na PC     │
+│  • pogoda      → /api/weather   (proxy)          │ ◄───── │  • proxy Open-Meteo i Google Calendar │
+│  • kalendarz   → /api/events    (proxy)          │        │  • todos.json – zadania trzymane na PC│
+└──────────────────────────────────────────────────┘        └────────────────────────────────────────┘
 ```
-
-### Dlaczego tak, a nie inaczej
 
 | Decyzja | Powód |
 |---|---|
-| **Web app serwowany z PC**, a nie APK | Nie trzeba niczego kompilować pod Fire OS. Poprawiasz plik na PC, klikasz ↻ na tablecie i gotowe. |
-| **Czysty ES5 + XHR, bez Tailwinda/Reacta** | Silk/WebView na starym Fire OS nie obsługuje `fetch`, `Promise`, arrow functions, CSS Grid ani zmiennych CSS. Tailwind CDN to duży JIT w nowoczesnym JS, więc na tym tablecie po prostu się nie załaduje. Wygląd w stylu Tailwinda daje ręcznie napisany CSS z prefiksami `-webkit-`. |
-| **Pogoda i kalendarz idą przez PC** | Stary Android ma przestarzałe TLS i certyfikaty, więc często nie połączy się z nowoczesnym HTTPS. Tablet rozmawia tylko z PC po zwykłym HTTP w sieci lokalnej. |
-| **Tablet wysyła ID przycisku, a nie komendę** | Akcje są zapisane wyłącznie w `config.json` na PC. Nikt w sieci nie odpali dowolnego polecenia, a do tego dochodzi token. |
-| **HTTP polling zamiast WebSocketów** | Działa wszędzie, a wykrycie rozłączenia w ciągu 5 s w zupełności wystarcza. Nie trzeba się martwić o wsparcie WebSocket w starym Silk. |
-| **To-do zapisywane na PC** | Lista przetrwa reset tabletu i można ją edytować także z przeglądarki na PC (`http://localhost:8765`). |
+| **Strona serwowana z PC zamiast APK** | Nie trzeba niczego kompilować pod Fire OS. Zmieniasz plik na PC, dotykasz ↻ na tablecie i gotowe. |
+| **Czysty ES5 + XHR, bez frameworków** | Stary WebView na Fire OS nie obsługuje `fetch`, `Promise`, CSS Grid ani zmiennych CSS. |
+| **Pogoda i kalendarz idą przez PC** | Stary Android ma przestarzałe TLS i certyfikaty. Tablet rozmawia wyłącznie z PC, po zwykłym HTTP w sieci lokalnej. |
+| **Tablet wysyła tylko ID kafelka** | To, co ma się stać, jest zapisane w `config.json` na PC. Z sieci nie da się odpalić dowolnej komendy. |
 
-## Instalacja (PC, Windows)
+## Instalacja na PC (Windows)
 
-1. Zainstaluj **Python 3.10+** (przy instalacji zaznacz *Add to PATH*).
-2. Uruchom `server\start.bat`. Przy pierwszym starcie utworzy `.venv`, zainstaluje paczki i skopiuje `config.example.json` do `config.json`.
-3. **Edytuj `server\config.json`**. Ustaw co najmniej własny `token` i przyciski. Po zmianach zrestartuj serwer.
-4. Zapora Windows: przy pierwszym starcie zezwól na dostęp w **sieci prywatnej**. Możesz też dodać regułę ręcznie (PowerShell jako admin):
+1. Zainstaluj **Python 3.10+** i przy instalacji zaznacz *Add to PATH*.
+2. Uruchom `server\start.bat`. Przy pierwszym starcie skrypt sam utworzy środowisko, zainstaluje paczki i skopiuje `config.example.json` do `config.json`.
+3. W `server\config.json` ustaw lokalizację pogody i adres kalendarza (opis niżej). Po zmianach zrestartuj serwer.
+4. **Zapora Windows:** przy pierwszym starcie zezwól na dostęp w **sieci prywatnej**. Możesz też dodać regułę ręcznie (PowerShell uruchomiony jako administrator):
    ```powershell
    netsh advfirewall firewall add rule name="KindleDeck" dir=in action=allow protocol=TCP localport=8765 profile=private
    ```
-5. W konsoli pojawi się adres w stylu `http://192.168.1.50:8765/?token=...`.
-6. **Stałe IP:** zrób rezerwację DHCP dla PC w routerze (po adresie MAC), żeby ten adres się nie zmieniał.
+5. W konsoli pojawi się adres w rodzaju `http://192.168.1.50:8765/`. Ten adres otwierasz na Kindle.
+6. **Stały adres IP:** w routerze zrób rezerwację DHCP dla PC i dla Kindle'a (po adresie MAC).
 
-**Autostart bez okna konsoli:** `Win+R` → `shell:startup`, a tam skrót do `server\start_hidden.vbs`. Logi trafiają wtedy do `server\deck.log`.
+**Autostart bez okna konsoli:** naciśnij `Win+R`, wpisz `shell:startup` i wrzuć tam skrót do `server\start_hidden.vbs`. Logi lądują w `server\deck.log`.
 
-## Instalacja (Kindle Fire)
+## Kindle: pełny ekran bez paska Silk
 
-**Opcja A, polecana: Fully Kiosk Browser** (APK z fully-kiosk.com, bo Amazon Appstore go nie ma):
-- Start URL: adres z konsoli serwera (razem z `?token=...`).
-- *Web Content Settings*: włącz JavaScript Interface. Dzięki temu dashboard pokazuje poziom baterii.
-- *Device Management*: Keep Screen On, opcjonalnie wygaszanie nocą.
-- *Kiosk Mode / Fullscreen*: pełny ekran bez pasków.
+Silk zawsze pokazuje pasek adresu. Da się go ukryć przyciskiem ⛶ w prawym górnym rogu dashboardu, ale po odświeżeniu strony pasek wraca. Na stałe najlepiej sprawdza się osobna przeglądarka „kioskowa”.
 
-**Opcja B: Silk Browser.** Otwórz adres, a potem użyj przycisku ⛶ (pełny ekran) w prawym górnym rogu. Poziom baterii w Silk może się nie wyświetlać.
+### Opcja 1 (polecana): Fully Kiosk Browser
 
-Token zapisuje się w pamięci przeglądarki, więc później wystarczy sam adres. Jeśli token się nie zgadza, tablet poprosi o niego sam.
+Darmowa przeglądarka stworzona do paneli na ścianę i biurko. Nie ma jej w Amazon Appstore, więc instalujesz ją z pliku APK.
 
-Layout jest rysowany pod **1024×600** (`viewport width=1024`). Na ekranach 1280×800 przeglądarka skaluje go automatycznie.
+1. Sprawdź wersję systemu: **Ustawienia → Opcje urządzenia → Aktualizacje systemu**. Fire OS 5 lub nowszy (każdy Fire 7 od 2015 roku) obsługuje Fully bez problemu.
+2. Na Kindle otwórz w Silk stronę **fully-kiosk.com**, przejdź do zakładki Download i pobierz APK.
+3. Zezwól na instalację z nieznanych źródeł. Fire zapyta o to przy otwieraniu pobranego pliku. Na starszych wersjach systemu włączysz to w **Ustawienia → Zabezpieczenia → Aplikacje z nieznanych źródeł**.
+4. Uruchom Fully. Wejdź w ustawienia (przesunięcie od lewej krawędzi → Settings) i ustaw:
+   - **Web Content Settings → Start URL:** `http://IP-TWOJEGO-PC:8765/`
+   - **Web Content Settings → Enable JavaScript Interface:** ON (dashboard pokaże baterię)
+   - **Toolbars & Appearance:** wyłącz pasek adresu i paski, włącz **Fullscreen Mode**
+   - **Device Management → Keep Screen On:** ON
+   - **Advanced Web Settings / Device Management → Launch on Boot:** ON (po restarcie tabletu od razu włącza się dashboard)
+5. Opcjonalnie: **Screen Saver** albo wygaszanie ekranu w nocy (Scheduled Sleep).
 
-## Konfiguracja przycisków (`server/config.json`)
+Wymienione wyżej funkcje działają w wersji darmowej. Płatna licencja PLUS dotyczy głównie blokady kiosku i zdalnego zarządzania, przy biurkowym panelu nie jest potrzebna. Aktualny podział funkcji sprawdź na stronie Fully, bo bywa zmieniany.
+
+### Opcja 2: skrót na pulpicie z Silk
+
+W Silk otwórz dashboard, potem menu → **Dodaj do ekranu głównego**. Strona ma manifest `display: fullscreen`, więc nowsze wersje Silk otwierają ją ze skrótu bez paska adresu. Na starym Fire OS bywa różnie i pasek może zostać. Wtedy zostaje przycisk ⛶ albo opcja 1.
+
+### Opcja 3: WallPanel (open source)
+
+Darmowa aplikacja open source do paneli ściennych (GitHub: *WallPanel*). Też wyświetla stronę na pełnym ekranie i trzyma ekran włączony. Ma mniej opcji niż Fully i nie przekazuje poziomu baterii do strony.
+
+## Konfiguracja (`server/config.json`)
+
+### Kafelki
 
 ```json
-{ "id": "dc_mute", "label": "Discord Mic", "icon": "✕", "color": "#a259ff", "sub": "mute",
-  "action": { "type": "hotkey", "keys": ["ctrl", "alt", "shift", "m"] } }
+{ "id": "gmail", "label": "Gmail", "icon": "gmail.svg",
+  "action": { "type": "url", "url": "https://mail.google.com" } }
 ```
 
-Kolejność w tablicy `buttons` odpowiada kolejności na siatce, od lewej do prawej i z góry na dół (12 pól).
+Siatka dopasowuje się do liczby kafelków: 1–4 dają układ 2×2, 5–6 dają 2×3, 7–9 dają 3×3, a 10–12 dają 3×4.
 
-- `color`: kolor tła kafelka, najlepiej kolor marki aplikacji (Discord `#5865F2`, Spotify `#1DB954`, YouTube `#E03131`).
-- `icon`: nazwa wbudowanej ikony liniowej (SVG, bez emoji) albo nazwa pliku z `web/icons/`, np. `"discord.png"`. Tam możesz wrzucić oficjalne logotypy aplikacji.
-- `icon_color` (opcjonalnie): kolor ikony, np. żółta żarówka na ciemnym kafelku.
+- `icon`: plik z `web/icons/` albo nazwa wbudowanej ikony liniowej. Gotowe pliki to `chrome.svg`, `gmail.svg`, `youtube.svg` i `claude.svg`. Możesz dorzucić własny PNG albo SVG.
+- Wbudowane ikony liniowe (pokazywane na kolorowym kafelku, kolor ustawiasz polem `color`): `mic`, `music`, `playpause`, `next`, `prev`, `volume`, `folder`, `globe`, `terminal`, `lock`, `mail`, `calendar`, `code`, `home`, `power`, `settings`.
 
-Wbudowane ikony: `mic`, `mic-off`, `volume`, `volume-x`, `headphones`, `chat`, `music`, `playpause`, `next`, `prev`, `monitor`, `camera`, `record`, `stream`, `youtube`, `folder`, `globe`, `gamepad`, `bulb`, `terminal`, `lock`, `mail`, `calendar`, `code`, `home`, `power`, `settings`.
-
-| `type` | Parametry | Przykład / uwagi |
+| `type` | Parametry | Przykład |
 |---|---|---|
-| `hotkey` | `keys: [...]` | `["ctrl","shift","m"]`, nazwy klawiszy jak w pyautogui |
-| `media` | `key` | `playpause`, `next`, `prev`, `stop`, `volup`, `voldown`, `mute` |
+| `url` | `url` | otwiera stronę w domyślnej przeglądarce |
+| `open` | `target` | `chrome`, ścieżka do exe, folder, `%USERPROFILE%\\Downloads`, `C:\\...\\Claude.exe` |
+| `hotkey` | `keys: [...]` | `["ctrl","shift","esc"]` |
+| `media` | `key` | `playpause`, `next`, `prev`, `volup`, `voldown`, `mute` |
+| `shell` | `cmd: [...]` | `["rundll32.exe","user32.dll,LockWorkStation"]` (blokada PC) |
 | `type` | `text` | wpisuje tekst |
-| `open` | `target` | exe, folder, plik, URI: `spotify:`, `steam://open/main`, `%USERPROFILE%\\Downloads` |
-| `url` | `url` | otwiera w domyślnej przeglądarce |
-| `shell` | `cmd: [...]`, `cwd` | `["powershell","-File","C:\\skrypty\\x.ps1"]` (lista, bez powłoki) |
-| `ha` | `service`, `entity_id`, `data` | `"light.toggle"`, `"light.pokoj"`; wymaga `home_assistant.url` + long-lived token |
-| `obs_scene` | `scene` | OBS 28+: Narzędzia → Ustawienia WebSocket Server (port 4455 + hasło do `obs`) |
-| `obs_mute` | `input` | np. `"Mic/Aux"` |
-| `obs_record` / `obs_stream` | – | przełącza nagrywanie / stream |
-| `multi` | `steps: [...]` | makro, np. otwórz playlistę → `sleep` 3 s → `playpause` |
-| `sleep` | `s` | pauza w makrze (max 10 s) |
+| `multi` | `steps: [...]` | kilka akcji po kolei, `{"type":"sleep","s":1}` daje pauzę |
 
-**Discord:** Ustawienia → Skróty klawiszowe → „Przełącz wyciszenie” → `Ctrl+Alt+Shift+M`. Skrót jest globalny, więc działa także wtedy, gdy Discord nie jest na pierwszym planie.
+### Pogoda
 
-**Spotify playlisty:** samo otwarcie URI `spotify:playlist:<id>` nie włącza odtwarzania, dlatego przykład w configu to makro (open → sleep → play). Uwaga: jeśli coś już gra, `playpause` to zatrzyma. Pewniejszym rozwiązaniem byłoby Spotify Web API, opisane w planie rozwoju niżej.
+`"weather": { "name": "Lubochnia", "lat": 51.58, "lon": 20.05 }`. Dane pochodzą z Open-Meteo: bez klucza API i bez rejestracji.
 
-**Kalendarz:** Google Calendar → Ustawienia kalendarza → *Tajny adres w formacie iCal* → wklej go do `calendar_ics_url`. Link do spotkania (Meet/Zoom/Teams/Discord) jest wyciągany z opisu, lokalizacji lub danych konferencji. „DOŁĄCZ” otwiera go **na PC**. Tablet przesyła wyłącznie ID wydarzenia, nigdy sam URL.
+### Kalendarz
 
-**Pomodoro:** czasy ustawisz w sekcji `pomodoro`. `on_work_start` / `on_break_start` przyjmują ID przycisku albo akcji z `hidden_actions`, np. żeby na start sesji pracy włączyć tryb „Nie przeszkadzać”. Przerwa startuje automatycznie, a kolejna sesja pracy czeka, aż ją uruchomisz.
+Google Calendar → Ustawienia → wybierz kalendarz → **Tajny adres w formacie iCal** → wklej go do `calendar_ics_url`. Linki do Meet, Zoom, Teams i Discorda są wyciągane automatycznie z opisu lub lokalizacji wydarzenia. „DOŁĄCZ” otwiera spotkanie **na PC**.
 
-![Tryb Focus](docs/focus.png)
+### Pomodoro
 
-## Bezpieczeństwo
+Sekcja `pomodoro` ustawia czasy w minutach. Przerwa startuje sama, a następna sesja pracy czeka, aż ją uruchomisz. Z `auto_focus: true` licznik po starcie przechodzi na pełny ekran.
 
-- Serwer jest przeznaczony do **sieci domowej**. Nie wystawiaj portu 8765 na internet. Jeśli potrzebujesz dostępu z zewnątrz, użyj Tailscale.
-- Token chroni API przed innymi urządzeniami w LAN (TV, goście). Ruch idzie jednak po HTTP, więc ktoś podsłuchujący sieć może go przechwycić. W domowym Wi-Fi to akceptowalne.
-- Akcje typu `shell` wykonują tylko to, co sam wpiszesz do configu.
+![Tryb skupienia](docs/focus.png)
 
-## Plan rozwoju
+## Dostęp i bezpieczeństwo
 
-**Etap 1 (ten commit):** serwer z akcjami, siatka 3×4, to-do, Pomodoro + tryb Focus, zegar, pogoda (Open-Meteo, bez klucza), kalendarz ICS, status PC i bateria.
+Strona otwiera się bez logowania i bez pytania o token. Jeśli chcesz, żeby kafelków nie dało się klikać z innych urządzeń w domu (telefony, telewizor), wpisz stałe IP Kindle'a:
 
-**Etap 2 (szybkie wygrane):**
-- Strony przycisków (np. „Stream”, „Praca”, „Dom”), przełączane przesuwaniem palcem.
-- Przyciski ze stanem, np. mikrofon pokazujący czerwony/zielony na podstawie danych z OBS (`GetInputMute`) lub Home Assistant (`/api/states`).
-- Edytor przycisków w przeglądarce na PC zamiast ręcznej edycji JSON.
-- Przycisk „Zablokuj PC” (`rundll32.exe user32.dll,LockWorkStation` przez `shell`).
+```json
+"allowed_ips": ["192.168.1.60"]
+```
 
-**Etap 3 (większe rzeczy):**
-- Spotify Web API: okładka i tytuł aktualnego utworu w dashboardzie oraz niezawodne odpalanie playlist.
-- Monitor PC: CPU, GPU, temperatury (`psutil` + LibreHardwareMonitor), a docelowo eksport do InfluxDB/Grafany.
-- Push z serwera przez Server-Sent Events, jeśli WebView na tablecie to obsługuje.
-- Integracja z Home Assistant w drugą stronę: dashboard pokazuje stany czujników.
+Wtedy dostęp ma tylko Kindle i sam PC. Pole `token` też zostało, ale jest puste i nieużywane. Port 8765 nie wychodzi poza sieć domową.
 
 ## Test bez tabletu
 
-Uruchom serwer i otwórz `http://localhost:8765/?token=TWÓJ_TOKEN` w Chrome. W DevTools włącz tryb urządzenia i ustaw rozdzielczość 1024×600.
+Uruchom serwer, otwórz `http://localhost:8765/` w Chrome, włącz w DevTools tryb urządzenia i ustaw rozdzielczość 1024×600.
+
+## Pomysły na dalej
+
+- Strony kafelków (np. „Praca” / „Rozrywka”) przełączane przesunięciem palca.
+- Edytor kafelków w przeglądarce na PC zamiast edycji JSON.
+- Prognoza godzinowa po dotknięciu karty pogody.
+- Statystyki Pomodoro: liczba sesji dziennie i tygodniowo.

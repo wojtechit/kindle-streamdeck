@@ -5,6 +5,8 @@
 <!-- width=1024: layout rysowany pod 1024x600; na ekranach 1280x800 przeglądarka po prostu przeskaluje -->
 <meta name="viewport" content="width=1024, user-scalable=no">
 <meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
 <meta name="theme-color" content="#1a3d8f">
 <title>Kindle Deck</title>
 <link rel="stylesheet" href="style.css">
@@ -94,13 +96,22 @@
       </div>
 
       <div id="weather" class="panel weather">
+        <div class="panel-head">
+          <span id="date" class="panel-title"></span>
+          <span id="w-loc" class="panel-meta right"></span>
+        </div>
         <div class="w-top">
           <div id="w-icon" class="w-icon"></div>
           <div class="w-main">
             <div id="w-temp" class="w-temp">--°</div>
             <div id="w-desc" class="w-desc"></div>
-            <div id="date" class="w-date"></div>
           </div>
+          <div id="w-range" class="w-range"></div>
+        </div>
+        <div class="w-stats">
+          <div class="w-stat"><span>Odczuwalna</span><b id="w-feels">--</b></div>
+          <div class="w-stat"><span>Wiatr</span><b id="w-wind">--</b></div>
+          <div class="w-stat"><span>Wilgotność</span><b id="w-hum">--</b></div>
         </div>
         <div id="w-days" class="w-days"></div>
       </div>

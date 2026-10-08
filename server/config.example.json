@@ -1,16 +1,15 @@
 {
   "host": "0.0.0.0",
   "port": 8765,
-  "token": "zmien-mnie",
+
+  "allowed_ips": [],
+  "token": "",
 
   "weather": { "name": "Lubochnia", "lat": 51.58, "lon": 20.05 },
 
   "calendar_ics_url": "",
   "calendar_days": 7,
   "calendar_max": 15,
-
-  "home_assistant": { "url": "http://192.168.1.10:8123", "token": "" },
-  "obs": { "host": "localhost", "port": 4455, "password": "" },
 
   "pomodoro": {
     "work": 25,
@@ -22,37 +21,16 @@
     "on_break_start": null
   },
 
-  "hidden_actions": [
-    { "id": "focus_on", "action": { "type": "hotkey", "keys": ["win", "n"] } }
-  ],
+  "hidden_actions": [],
 
   "buttons": [
-    { "id": "dc_mute",   "label": "Discord Mic", "icon": "mic",       "color": "#5865F2",
-      "action": { "type": "hotkey", "keys": ["ctrl", "alt", "shift", "m"] } },
-    { "id": "obs_mute",  "label": "Mute",        "icon": "mic-off",   "color": "#D93636",
-      "action": { "type": "obs_mute", "input": "Mic/Aux" } },
-    { "id": "spotify",   "label": "Spotify",     "icon": "music",     "color": "#1DB954",
-      "action": { "type": "open", "target": "spotify:" } },
-
-    { "id": "obs_s1",    "label": "Scena 1",     "icon": "monitor",   "color": "#2F9E44",
-      "action": { "type": "obs_scene", "scene": "Gra" } },
-    { "id": "obs_s2",    "label": "Scena 2",     "icon": "camera",    "color": "#1C7ED6",
-      "action": { "type": "obs_scene", "scene": "Kamera" } },
-    { "id": "obs_rec",   "label": "Nagrywanie",  "icon": "record",    "color": "#343A40",
-      "action": { "type": "obs_record" } },
-
-    { "id": "youtube",   "label": "YouTube",     "icon": "youtube",   "color": "#E03131",
+    { "id": "chrome",  "label": "Chrome",  "icon": "chrome.svg",
+      "action": { "type": "open", "target": "chrome" } },
+    { "id": "gmail",   "label": "Gmail",   "icon": "gmail.svg",
+      "action": { "type": "url", "url": "https://mail.google.com" } },
+    { "id": "youtube", "label": "YouTube", "icon": "youtube.svg",
       "action": { "type": "url", "url": "https://www.youtube.com" } },
-    { "id": "projekty",  "label": "Projekty",    "icon": "folder",    "color": "#E8A317",
-      "action": { "type": "open", "target": "%USERPROFILE%\\Documents" } },
-    { "id": "browser",   "label": "Przeglądarka","icon": "globe",     "color": "#1098AD",
-      "action": { "type": "url", "url": "https://calendar.google.com" } },
-
-    { "id": "steam",     "label": "Steam",       "icon": "gamepad",   "color": "#1B4F9C",
-      "action": { "type": "open", "target": "steam://open/main" } },
-    { "id": "playpause", "label": "Play/Pauza",  "icon": "playpause", "color": "#495057",
-      "action": { "type": "media", "key": "playpause" } },
-    { "id": "light",     "label": "Światło",     "icon": "bulb",      "color": "#1F2937", "icon_color": "#FCC419",
-      "action": { "type": "ha", "service": "light.toggle", "entity_id": "light.pokoj" } }
+    { "id": "claude",  "label": "Claude",  "icon": "claude.svg",
+      "action": { "type": "url", "url": "https://claude.ai" } }
   ]
 }

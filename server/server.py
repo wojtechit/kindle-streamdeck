@@ -65,8 +65,18 @@ app = Flask(__name__, static_folder=None)
 
 
 def require_token(fn):
+    """
+    Dostęp bez logowania. Opcjonalnie dwa zabezpieczenia z config.json:
+      allowed_ips: ["192.168.1.60"]  - tylko te urządzenia (stałe IP Kindle'a) + sam PC
+      token: "..."                   - wtedy adres na tablecie musi mieć ?token=...
+    Oba puste = każdy w domowej sieci może klikać przyciski (tylko te z configu).
+    """
     @functools.wraps(fn)
     def wrapper(*a, **kw):
+        allowed = CFG.get("allowed_ips") or []
+        ip = request.remote_addr or ""
+        if allowed and ip not in allowed and ip not in ("127.0.0.1", "::1"):
+            return jsonify(ok=False, error="ip %s niedozwolone" % ip), 403
         expected = CFG.get("token") or ""
         if expected:
             got = request.headers.get("X-Deck-Token") or request.args.get("token") or ""
@@ -258,7 +268,7 @@ def _fetch_weather():
             "daily": "weather_code,temperature_2m_max,temperature_2m_min,"
                      "precipitation_probability_max,sunrise,sunset",
             "timezone": "auto",
-            "forecast_days": 3,
+            "forecast_days": 4,
         },
         timeout=8,
     )
@@ -421,8 +431,8 @@ def main():
     if token:
         url += "?token=" + token
     print("\n  Kindle Deck działa. Otwórz na tablecie:\n\n    %s\n" % url)
-    if not token or token == "zmien-mnie":
-        log.warning("Ustaw własny 'token' w config.json!")
+    if not token and not CFG.get("allowed_ips"):
+        log.info("Brak token/allowed_ips - dostęp dla całej sieci domowej (ustaw allowed_ips na IP Kindle'a)")
     try:
         from waitress import serve
         serve(app, host=host, port=port, threads=8)
