@@ -1,0 +1,6 @@
+fastapi>=0.110
+uvicorn[standard]>=0.29
+pyserial>=3.5
+numpy>=1.26
+opencv-python>=4.9
+dxcam>=0.0.5; sys_platform == "win32"
